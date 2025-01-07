@@ -12,20 +12,18 @@ import numpy as np
 
 from models.trainer import get_trainer
 from models.datasets import get_loaders
+# Now we import ContinuousDiffusion instead of ByteNetDiffusion
 from models.model.continuous_diffusion import GaussianDiffusion
 
 
-def print_gpu_memory(stage=""):
-    """Prints current GPU memory usage with an optional stage description."""
+def print_gpu_memory():
     if torch.cuda.is_available():
         memory_allocated = torch.cuda.memory_allocated() / (1024 ** 2)  # In MB
         memory_reserved = torch.cuda.memory_reserved() / (1024 ** 2)   # In MB
-        print(f"[{stage}] GPU Memory Allocated: {memory_allocated:.2f} MB")
-        print(f"[{stage}] GPU Memory Reserved:  {memory_reserved:.2f} MB")
-
+        print(f"GPU Memory Allocated: {memory_allocated:.2f} MB")
+        print(f"GPU Memory Reserved:  {memory_reserved:.2f} MB")
 
 def set_seed(seed):
-    """Sets seed for reproducibility."""
     random.seed(seed)  # Python random module
     np.random.seed(seed)  # NumPy random seed
     torch.manual_seed(seed)  # PyTorch CPU seed
@@ -39,63 +37,48 @@ def set_seed(seed):
 
 @hydra.main(config_path="configs/training", config_name="continuous_test")
 def main(config):
-    # Create experiment directory
     Path(config.exp_name).mkdir(parents=True, exist_ok=True)
 
-    # Move to root directory
     root_dir = hydra.utils.get_original_cwd()
     os.chdir(root_dir)
-
-    print_gpu_memory("Before model instantiation")
 
     # Instantiate the continuous diffusion model from config
     model = hydra.utils.instantiate(config.model, _recursive_=False)
 
-    print_gpu_memory("After model instantiation")
-
-    # Set seed for reproducibility
+    # Set seed for reproducibility (optional)
     set_seed(config.train.seed)
 
-    # Load checkpoint if specified
+    # If you have a checkpoint to load, you could do so here:
     # if config.ckpt_path is not None:
     #     state_dict = torch.load(config.ckpt_path)['state_dict']
     #     model.load_state_dict(state_dict)
 
-    # Move model to GPU if required
     if config.train.ngpu > 0:
-        print_gpu_memory("Before moving model to GPU")
+        print_gpu_memory()
         model.to(torch.device("cuda"))
-        print_gpu_memory("After moving model to GPU")
+        print_gpu_memory()
 
-    # Get data loaders
     train_loader, validation_loader = get_loaders(config)
 
-    print_gpu_memory("After loading data")
-
-    # Initialize trainer
     trainer = get_trainer(config)
 
-    print_gpu_memory("After initializing trainer")
+    print("After getting training data:")
+    print_gpu_memory()
 
-    # Suppress warnings
+    # Suppress annoying warnings if desired
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
 
-        print_gpu_memory("Before training starts")
-
-        # Start training
         trainer.fit(
             model=model,
             train_dataloaders=train_loader,
             val_dataloaders=validation_loader,
         )
 
-        print_gpu_memory("After training ends")
-
-    # Optional: Save model state
+    # If desired, save the state dict for compatibility with EvoDiff or other tools:
     # save_path = os.path.join("checkpoints", config.exp_name)
     # best_checkpoint = os.path.join(save_path, "best_model.ckpt")
-    # continuous_model = GaussianDiffusion.load_from_checkpoint(best_checkpoint)
+    # continuous_model = ContinuousDiffusion.load_from_checkpoint(best_checkpoint)
     # torch.save(continuous_model.network.state_dict(), os.path.join(save_path, "best_model_state_dict.pth"))
 
 

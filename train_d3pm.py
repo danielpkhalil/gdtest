@@ -7,7 +7,6 @@ import torch
 import wandb
 import warnings
 from omegaconf import OmegaConf
-import sys
 import random
 import numpy as np
 
@@ -16,6 +15,14 @@ from models.datasets import (
     get_loaders,
 )
 from models.model.d3pm_evodiff import ByteNetDiffusion
+
+def print_gpu_memory(stage=""):
+    """Prints current GPU memory usage with an optional stage description."""
+    if torch.cuda.is_available():
+        memory_allocated = torch.cuda.memory_allocated() / (1024 ** 2)  # In MB
+        memory_reserved = torch.cuda.memory_reserved() / (1024 ** 2)   # In MB
+        print(f"[{stage}] GPU Memory Allocated: {memory_allocated:.2f} MB")
+        print(f"[{stage}] GPU Memory Reserved:  {memory_reserved:.2f} MB")
 
 def set_seed(seed):
     random.seed(seed)                  # Python random module
@@ -30,54 +37,57 @@ def set_seed(seed):
 
 @hydra.main(config_path="configs/training", config_name="d3pm_test")
 def main(config):
+    # Create experiment directory
     Path(config.exp_name).mkdir(parents=True, exist_ok=True)
-    
+
+    # Move to root directory
     root_dir = hydra.utils.get_original_cwd()
-    # Change back to the root directory
     os.chdir(root_dir)
 
-    model = hydra.utils.instantiate(config.model, _recursive_=False) #_recursive_=False
+    print_gpu_memory("Before model instantiation")
 
-    #TODO: set a seed for reproducibility
+    # Instantiate the model
+    model = hydra.utils.instantiate(config.model, _recursive_=False)
 
-    #TODO: could implement model loading from evodiff.pretrained.load_sequence_checkpoint
-    #Probably not necessary if model training is fast
+    print_gpu_memory("After model instantiation")
 
-    # if config.ckpt_path is not None:
-    #     state_dict = torch.load(config.ckpt_path)['state_dict']
-    #     model.load_state_dict(state_dict)
+    # Move model to GPU if required
     if config.train.ngpu > 0:
+        print_gpu_memory("Before moving model to GPU")
         model.to(torch.device("cuda"))
+        print_gpu_memory("After moving model to GPU")
 
+    # Get data loaders
     train_loader, validation_loader = get_loaders(config)
 
-    #TODO: decide if you should use deterministic behavior which slows down training
-    #set_seed(config.train.seed)
+    print_gpu_memory("After loading data")
 
-    if True: #training diffusion with random timesteps
-        #model.freeze_for_discriminative()
-        trainer = get_trainer(config)
+    # Initialize trainer
+    trainer = get_trainer(config)
 
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")  # catch really annoying BioPython warnings
-            
-            trainer.fit(
-                model=model,
-                train_dataloaders=train_loader,
-                val_dataloaders=validation_loader,
-            )
-        
-            #save the lightning checkpoint as a state dict of the network that is compatible with EvoDiff - let's just do this during loading instead
-            # save_path = os.path.join("checkpoints", config.exp_name)
-            # best_checkpoint = os.path.join(save_path, "best_model.ckpt")
-            # lightning_model = ByteNetDiffusion.load_from_checkpoint(best_checkpoint)
-            # torch.save(lightning_model.network.state_dict(), os.path.join(save_path, "best_model_state_dict.pth"))
+    print_gpu_memory("After initializing trainer")
 
-    # else:
-    #     train_dl, valid_dl = [
-    #         make_discriminative_loader(config, model, dl) for dl in [train_dl, valid_dl]
-    #     ]
+    # Suppress warnings
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")  # Suppress warnings
 
-if __name__ == "__main__":    
+        print_gpu_memory("Before training starts")
+
+        # Start training
+        trainer.fit(
+            model=model,
+            train_dataloaders=train_loader,
+            val_dataloaders=validation_loader,
+        )
+
+        print_gpu_memory("After training ends")
+
+    # Optional: Save model state
+    # save_path = os.path.join("checkpoints", config.exp_name)
+    # best_checkpoint = os.path.join(save_path, "best_model.ckpt")
+    # lightning_model = ByteNetDiffusion.load_from_checkpoint(best_checkpoint)
+    # torch.save(lightning_model.network.state_dict(), os.path.join(save_path, "best_model_state_dict.pth"))
+
+if __name__ == "__main__":
     main()
     sys.exit()
