@@ -24,6 +24,13 @@ def print_gpu_memory(stage=""):
         print(f"[{stage}] GPU Memory Allocated: {memory_allocated:.2f} MB")
         print(f"[{stage}] GPU Memory Reserved:  {memory_reserved:.2f} MB")
 
+def print_model_size(model, stage=""):
+    """Prints the size of the model in MB."""
+    param_size = sum(p.numel() * p.element_size() for p in model.parameters())
+    buffer_size = sum(b.numel() * b.element_size() for b in model.buffers())
+    size_all_mb = (param_size + buffer_size) / (1024 ** 2)
+    print(f"[{stage}] Model Size: {size_all_mb:.2f} MB")
+
 def set_seed(seed):
     random.seed(seed)                  # Python random module
     np.random.seed(seed)               # NumPy random seed
@@ -50,6 +57,7 @@ def main(config):
     model = hydra.utils.instantiate(config.model, _recursive_=False)
 
     print_gpu_memory("After model instantiation")
+    print_model_size(model, "After model instantiation")
 
     # Move model to GPU if required
     if config.train.ngpu > 0:

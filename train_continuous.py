@@ -62,9 +62,6 @@ def main(config):
 
     trainer = get_trainer(config)
 
-    print("After getting training data:")
-    print_gpu_memory()
-
     # Suppress annoying warnings if desired
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
