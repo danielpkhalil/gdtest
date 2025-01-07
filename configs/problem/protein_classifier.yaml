@@ -1,0 +1,20 @@
+name: protein_classifier
+model:
+  _target_: problem.protein.ProteinPredictor
+  predictor_config:
+    alphabet_size: 26
+    residues: [183, 184, 227, 228]
+    hidden_dim: 64
+    checkpoint: checkpoints/classifiers/default.pt
+data:
+  _target_: data.mnist.MNIST
+  train: False
+  discrete: True
+  
+
+exp_dir: exps/protein
+
+evaluator:
+  _target_: eval.Evaluator
+  residues: [183, 184, 227, 228]
+  data_path: data/fitness.csv

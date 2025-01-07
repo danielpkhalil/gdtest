@@ -1,0 +1,2 @@
+### TODO: alternatively implement a manual callback to save model weights in a format compatible with evodiff and guided-diffusion codebase ###
+#https://pytorch-lightning.readthedocs.io/en/1.2.10/common/weights_loading.html

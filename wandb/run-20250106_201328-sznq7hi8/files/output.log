@@ -1,0 +1,13 @@
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+
+  | Name    | Type                         | Params | Mode
+-----------------------------------------------------------------
+0 | network | GaussianDiffusionTransformer | 90.8 M | train
+-----------------------------------------------------------------
+90.8 M    Trainable params
+0         Non-trainable params
+90.8 M    Total params
+363.321   Total estimated model params size (MB)
+235       Modules in train mode
+0         Modules in eval mode
+Epoch 0:  15%|███████████████▌                                                                                     | 127/827 [00:20<01:50,  6.32it/s, v_num=7hi8]

@@ -1,0 +1,48 @@
+exp_name: continuous-training-test
+wandb_project: guided-diffusion-protein
+data:
+  name: trpB
+  dataset_path: data/trpB_processed.csv
+  splits:
+  - train
+  - validation
+model:
+  _target_: models.model.continuous_diffusion.GaussianDiffusion
+  model_config:
+    name: continuous_diffusion
+    _lambda: 0
+    mask: uniform
+    device: cuda
+  network:
+    _target_: models.model.continuous_diffusion.GaussianDiffusionTransformer
+    in_channels: 64
+    vocab_size: 20
+    dropout: 0.1
+    bert_config_name: bert-base-uncased
+    target_channels: 0
+    discr_stop_grad: true
+  noise_schedule:
+    _target_: models.collaters.GaussianDiffusionSchedule
+    timesteps: 500
+    noise_schedule: cosine
+    noise_scale: 1.0
+  optimizer:
+    _target_: torch.optim.AdamW
+    lr: 0.0001
+  lr_scheduler:
+    _target_: transformers.get_linear_schedule_with_warmup
+    num_warmup_steps: 10
+    num_training_steps: 10
+tokenizer:
+  _target_: evodiff.utils.Tokenizer
+train:
+  seed: 42
+  gradient_clip: 10.0
+  min_epochs: 100
+  max_epochs: 100
+  early_stop_patience: 0
+  batch_size: 64
+  val_interval: 1
+  log_interval: 10
+  workers: 4
+  ngpu: 1

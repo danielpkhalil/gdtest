@@ -1,0 +1,8 @@
+exp_name: default
+batch_size: 32
+n_epochs: 10
+save_dir: checkpoints/classifiers
+defaults:
+  - classifier: mlp
+  - model: evodiff_d3pm
+  - classifier_problem: trpb_protein

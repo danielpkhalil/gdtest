@@ -1,0 +1,17 @@
+exp_name: iterative
+measurement: False
+num_samples: 10
+wandb: False
+sample_batch_size: 96
+train_batch_size: 32
+n_epochs: 100
+save_dir: checkpoints/classifiers
+num_rounds: 3
+
+defaults:
+  - model: evodiff_d3pm
+  - problem: protein_classifier
+  - algorithm: cls_guidance
+  - classifier: mlp
+  - classifier_problem: trpb_protein
+
