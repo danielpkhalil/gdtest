@@ -14,7 +14,7 @@ model:
     name: continuous_diffusion  # used for your check
     _lambda: 0
     mask: uniform
-    device: cuda
+    device: cuda:1
 
   network:
     _target_: models.model.continuous_diffusion.GaussianDiffusionTransformer
