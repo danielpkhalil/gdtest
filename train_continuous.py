@@ -16,6 +16,13 @@ from models.datasets import get_loaders
 from models.model.continuous_diffusion import GaussianDiffusion
 
 
+def print_gpu_memory():
+    if torch.cuda.is_available():
+        memory_allocated = torch.cuda.memory_allocated() / (1024 ** 2)  # In MB
+        memory_reserved = torch.cuda.memory_reserved() / (1024 ** 2)   # In MB
+        print(f"GPU Memory Allocated: {memory_allocated:.2f} MB")
+        print(f"GPU Memory Reserved:  {memory_reserved:.2f} MB")
+
 def set_seed(seed):
     random.seed(seed)  # Python random module
     np.random.seed(seed)  # NumPy random seed
@@ -47,11 +54,16 @@ def main(config):
     #     model.load_state_dict(state_dict)
 
     if config.train.ngpu > 0:
+        print_gpu_memory()
         model.to(torch.device("cuda"))
+        print_gpu_memory()
 
     train_loader, validation_loader = get_loaders(config)
 
     trainer = get_trainer(config)
+
+    print("After getting training data:")
+    print_gpu_memory()
 
     # Suppress annoying warnings if desired
     with warnings.catch_warnings():

@@ -15,7 +15,7 @@ model:
     name: d3pm_evodiff
     _lambda: 0 #reweighting term for the loss function
     mask: uniform #could also support blosum or absorbing
-    device: cuda
+    device: cuda:1
 
   network:
     #config based on smaller evodiff model https://github.com/microsoft/evodiff/blob/main/config/config38M.json
@@ -53,7 +53,7 @@ train:
   min_epochs: 100
   max_epochs: 100
   early_stop_patience: 0 #need this?
-  batch_size: 64
+  batch_size: 16
   val_interval: 1 #per epoch
   log_interval: 10 #per step
   workers: 4

@@ -1,0 +1,159 @@
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+
+  | Name       | Type          | Params | Mode
+-----------------------------------------------------
+0 | network    | ByteNetLMTime | 37.9 M | train
+1 | loss_func1 | D3PMLVBLoss   | 0      | train
+2 | loss_func2 | D3PMCELoss    | 0      | train
+-----------------------------------------------------
+37.9 M    Trainable params
+0         Non-trainable params
+37.9 M    Total params
+151.553   Total estimated model params size (MB)
+237       Modules in train mode
+0         Modules in eval mode
+Epoch 0:   0%|                                                                                                                           | 0/827 [00:00<?, ?it/s]
+Error executing job with overrides: []
+Traceback (most recent call last):
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/trainer/call.py", line 46, in _call_and_handle_interrupt
+    return trainer.strategy.launcher.launch(trainer_fn, *args, trainer=trainer, **kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/strategies/launchers/subprocess_script.py", line 105, in launch
+    return function(*args, **kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 574, in _fit_impl
+    self._run(model, ckpt_path=ckpt_path)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 981, in _run
+    results = self._run_stage()
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 1025, in _run_stage
+    self.fit_loop.run()
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/loops/fit_loop.py", line 205, in run
+    self.advance()
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/loops/fit_loop.py", line 363, in advance
+    self.epoch_loop.run(self._data_fetcher)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/loops/training_epoch_loop.py", line 140, in run
+    self.advance(data_fetcher)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/loops/training_epoch_loop.py", line 250, in advance
+    batch_output = self.automatic_optimization.run(trainer.optimizers[0], batch_idx, kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/loops/optimization/automatic.py", line 190, in run
+    self._optimizer_step(batch_idx, closure)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/loops/optimization/automatic.py", line 268, in _optimizer_step
+    call._call_lightning_module_hook(
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/trainer/call.py", line 167, in _call_lightning_module_hook
+    output = fn(*args, **kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/core/module.py", line 1306, in optimizer_step
+    optimizer.step(closure=optimizer_closure)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/core/optimizer.py", line 153, in step
+    step_output = self._strategy.optimizer_step(self._optimizer, closure, **kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/strategies/ddp.py", line 270, in optimizer_step
+    optimizer_output = super().optimizer_step(optimizer, closure, model, **kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/strategies/strategy.py", line 238, in optimizer_step
+    return self.precision_plugin.optimizer_step(optimizer, model=model, closure=closure, **kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/plugins/precision/precision.py", line 122, in optimizer_step
+    return optimizer.step(closure=closure, **kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/torch/optim/lr_scheduler.py", line 137, in wrapper
+    return func.__get__(opt, opt.__class__)(*args, **kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/torch/optim/optimizer.py", line 487, in wrapper
+    out = func(*args, **kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/torch/optim/optimizer.py", line 91, in _use_grad
+    ret = func(self, *args, **kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/torch/optim/adamw.py", line 197, in step
+    loss = closure()
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/plugins/precision/precision.py", line 108, in _wrap_closure
+    closure_result = closure()
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/loops/optimization/automatic.py", line 144, in __call__
+    self._result = self.closure(*args, **kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/loops/optimization/automatic.py", line 129, in closure
+    step_output = self._step_fn()
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/loops/optimization/automatic.py", line 317, in _training_step
+    training_step_output = call._call_strategy_hook(trainer, "training_step", *kwargs.values())
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/trainer/call.py", line 319, in _call_strategy_hook
+    output = fn(*args, **kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/strategies/strategy.py", line 389, in training_step
+    return self._forward_redirection(self.model, self.lightning_module, "training_step", *args, **kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/strategies/strategy.py", line 640, in __call__
+    wrapper_output = wrapper_module(*args, **kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/torch/nn/parallel/distributed.py", line 1643, in forward
+    else self._run_ddp_forward(*inputs, **kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/torch/nn/parallel/distributed.py", line 1459, in _run_ddp_forward
+    return self.module(*inputs, **kwargs)  # type: ignore[index]
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/strategies/strategy.py", line 633, in wrapped_forward
+    out = method(*_args, **_kwargs)
+  File "/mnt/c/Users/danie/PycharmProjects/gdtest/models/trainer.py", line 21, in training_step
+    out = self.forward(batch
+  File "/mnt/c/Users/danie/PycharmProjects/gdtest/models/model/d3pm_evodiff.py", line 82, in forward
+    outputs = self.network(src, timestep, input_mask=input_mask.unsqueeze(-1))
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/evodiff/model.py", line 171, in forward
+    e = self.embedder(x, y, input_mask=input_mask)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/evodiff/model.py", line 129, in forward
+    return self._convolve(e, input_mask=input_mask)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/evodiff/model.py", line 144, in _convolve
+    e = layer(e, input_mask=input_mask)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/sequence_models/convolutional.py", line 249, in forward
+    self.conv(self.sequence1(x), input_mask=input_mask)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/sequence_models/convolutional.py", line 40, in forward
+    x = x * input_mask
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 68.00 MiB. GPU 0 has a total capacity of 4.00 GiB of which 0 bytes is free. Including non-PyTorch memory, this process has 17179869184.00 GiB memory in use. Of the allocated memory 10.36 GiB is allocated by PyTorch, and 242.55 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/mnt/c/Users/danie/PycharmProjects/gdtest/train_d3pm.py", line 64, in main
+    trainer.fit(
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 538, in fit
+    call._call_and_handle_interrupt(
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/trainer/call.py", line 68, in _call_and_handle_interrupt
+    trainer._teardown()
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 1004, in _teardown
+    self.strategy.teardown()
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/strategies/ddp.py", line 419, in teardown
+    super().teardown()
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/strategies/parallel.py", line 133, in teardown
+    super().teardown()
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/pytorch_lightning/strategies/strategy.py", line 535, in teardown
+    self.lightning_module.cpu()
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/lightning_fabric/utilities/device_dtype_mixin.py", line 82, in cpu
+    return super().cpu()
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1118, in cpu
+    return self._apply(lambda t: t.cpu())
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/torch/nn/modules/module.py", line 900, in _apply
+    module._apply(fn)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/torch/nn/modules/module.py", line 900, in _apply
+    module._apply(fn)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/torch/nn/modules/module.py", line 900, in _apply
+    module._apply(fn)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/torch/nn/modules/module.py", line 927, in _apply
+    param_applied = fn(param)
+  File "/home/daniel/miniconda3/envs/GD/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1118, in <lambda>
+    return self._apply(lambda t: t.cpu())
+RuntimeError: CUDA error: out of memory
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.

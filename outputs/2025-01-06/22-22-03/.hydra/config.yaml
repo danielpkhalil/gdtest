@@ -1,0 +1,50 @@
+exp_name: d3pm-training-test
+wandb_project: guided-diffusion-protein
+data:
+  name: trpB
+  dataset_path: data/trpB_processed.csv
+  splits:
+  - train
+  - validation
+model:
+  _target_: models.model.d3pm_evodiff.ByteNetDiffusion
+  model_config:
+    name: d3pm_evodiff
+    _lambda: 0
+    mask: uniform
+    device: cuda
+  network:
+    _target_: evodiff.model.ByteNetLMTime
+    d_embedding: 8
+    d_model: 1024
+    n_layers: 16
+    kernel_size: 5
+    r: 128
+    causal: false
+    rank: null
+    dropout: 0.0
+    tie_weights: false
+    final_ln: false
+    slim: true
+    activation: gelu
+    timesteps: 500
+  tokenizer:
+    _target_: evodiff.utils.Tokenizer
+  optimizer:
+    _target_: torch.optim.AdamW
+    lr: 0.0001
+  lr_scheduler:
+    _target_: transformers.get_linear_schedule_with_warmup
+    num_warmup_steps: 10
+    num_training_steps: 10
+train:
+  seed: 42
+  gradient_clip: 10.0
+  min_epochs: 100
+  max_epochs: 100
+  early_stop_patience: 0
+  batch_size: 64
+  val_interval: 1
+  log_interval: 10
+  workers: 4
+  ngpu: 1
